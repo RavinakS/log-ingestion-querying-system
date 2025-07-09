@@ -1,4 +1,5 @@
 const { addNewLog, getLogs } = require("./logIngestion.model");
+const { checkRequiredFields } = require("./utils");
 
 const addLogIngestion = async (req, res) => {
   try {
@@ -30,29 +31,22 @@ const addLogIngestion = async (req, res) => {
 
 const getLogIngestions = async (req, res) => {
   try {
+    const { timestamp, search } = req.query;
+
+    let filtered = logs;
+
+    if (level) {
+      filtered = filtered.filter((log) => log.level === level);
+    }
+
+    if (search) {
+      filtered = filtered.filter((log) => log.message.includes(search));
+    }
+
+    res.json(filtered);
   } catch (err) {
     console.log(err);
   }
-};
-
-const checkRequiredFields = (log) => {
-  let requiredFieldsExists = true;
-  const { level, message, resourceId, timestamp, traceId, commit, metadata } =
-    log;
-
-  if (
-    !level ||
-    !message ||
-    !resourceId ||
-    !timestamp ||
-    !traceId ||
-    !commit ||
-    metadata
-  ) {
-    requiredFieldsExists = false;
-  }
-
-  return requiredFieldsExists;
 };
 
 module.exports = { addLogIngestion, getLogIngestions };

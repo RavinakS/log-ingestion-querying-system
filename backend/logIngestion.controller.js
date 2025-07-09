@@ -1,7 +1,7 @@
 const { addNewLog, getLogs } = require("./logIngestion.model");
 const { checkRequiredFields } = require("./utils");
 
-const addLogIngestion = async (req, res) => {
+const addLog = async (req, res) => {
   try {
     const { level, message, resourceId, timestamp, traceId, commit, metadata } =
       req.body;
@@ -25,15 +25,17 @@ const addLogIngestion = async (req, res) => {
     await addNewLog(log);
     res.status(201).json({ message: "Log ingested successfully", log });
   } catch (err) {
+    res.status(500).json({ message: "Something went wrong!!", err });
     console.log(err);
   }
 };
 
-const getLogIngestions = async (req, res) => {
+const getLogData = async (req, res) => {
   try {
-    const { timestamp, search } = req.query;
+    const { search, level, startTime, endTime } = req.query;
 
-    let filtered = logs;
+    const logData = getLogs();
+    let filtered = logData;
 
     if (level) {
       filtered = filtered.filter((log) => log.level === level);
@@ -43,10 +45,21 @@ const getLogIngestions = async (req, res) => {
       filtered = filtered.filter((log) => log.message.includes(search));
     }
 
-    res.json(filtered);
+    if (startTime) {
+      const start = new Date(startTime);
+      filtered = filtered.filter((log) => new Date(log.timestamp) >= start);
+    }
+
+    if (endTime) {
+      const end = new Date(endTime);
+      filtered = filtered.filter((log) => new Date(log.timestamp) <= end);
+    }
+
+    res.status(201).json({ logs: filtered });
   } catch (err) {
+    res.status(500).json({ message: "Something went wrong!!", err });
     console.log(err);
   }
 };
 
-module.exports = { addLogIngestion, getLogIngestions };
+module.exports = { addLog, getLogs };

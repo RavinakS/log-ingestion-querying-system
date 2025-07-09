@@ -1,10 +1,7 @@
 const Router = require("express").Router();
-const {
-  addLogIngestion,
-  getLogIngestions,
-} = require("./logIngestion.controller");
+const { addLog, getLogs } = require("./logIngestion.controller");
 
-Router.post("/add-log-ingestion", addLogIngestion);
-Router.get("/get-log-ingestion", getLogIngestions);
+Router.post("/add-log", addLog);
+Router.get("/get-logs", getLogs);
 
 module.exports = Router;

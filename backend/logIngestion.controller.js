@@ -34,7 +34,7 @@ const getLogData = async (req, res) => {
   try {
     const { search, level, startTime, endTime } = req.query;
 
-    const logData = getLogs();
+    const logData = await getLogs();
     let filtered = logData;
 
     if (level) {
@@ -62,4 +62,4 @@ const getLogData = async (req, res) => {
   }
 };
 
-module.exports = { addLog, getLogs };
+module.exports = { addLog, getLogData };

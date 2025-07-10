@@ -1,21 +1,24 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Card from "components/card";
 import { FiSearch } from "react-icons/fi";
-import {
-  createColumnHelper,
-  flexRender,
-  getCoreRowModel,
-  getSortedRowModel,
-  useReactTable,
-} from "@tanstack/react-table";
 import LogsTable from "./LogsTable";
+import axios from "axios";
+const baseUrl = "http://localhost:5000";
 
 function ColumnsTable(props) {
-  const { tableData } = props;
-  const [sorting, setSorting] = useState([]);
+  const [logs, setLogs] = useState([]);
   const [date, setDate] = useState("");
   const [level, setLevel] = useState("");
   const [search, setSearch] = useState("");
+
+  const getLogsData = async () => {
+    try {
+      const logsData = await axios.get(`${baseUrl}/get-logs`);
+      setLogs(logsData?.data?.logs || []);
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   const handleDateChange = (e) => {
     setDate(e.target.value);
@@ -30,69 +33,10 @@ function ColumnsTable(props) {
     console.log("Selected level:", level);
   };
 
-  let defaultData = tableData;
-  const columns = [
-    columnHelper.accessor("name", {
-      id: "name",
-      header: () => (
-        <p className="text-sm font-bold text-gray-600 dark:text-white">NAME</p>
-      ),
-      cell: (info) => (
-        <p className="text-sm font-bold text-navy-700 dark:text-white">
-          {info.getValue()}
-        </p>
-      ),
-    }),
-    columnHelper.accessor("progress", {
-      id: "progress",
-      header: () => (
-        <p className="text-sm font-bold text-gray-600 dark:text-white">
-          PROGRESS
-        </p>
-      ),
-      cell: (info) => (
-        <p className="text-sm font-bold text-navy-700 dark:text-white">
-          {info.getValue()}
-        </p>
-      ),
-    }),
-    columnHelper.accessor("quantity", {
-      id: "quantity",
-      header: () => (
-        <p className="text-sm font-bold text-gray-600 dark:text-white">
-          QUANTITY
-        </p>
-      ),
-      cell: (info) => (
-        <p className="text-sm font-bold text-navy-700 dark:text-white">
-          {info.getValue()}
-        </p>
-      ),
-    }),
-    columnHelper.accessor("date", {
-      id: "date",
-      header: () => (
-        <p className="text-sm font-bold text-gray-600 dark:text-white">DATE</p>
-      ),
-      cell: (info) => (
-        <p className="text-sm font-bold text-navy-700 dark:text-white">
-          {info.getValue()}
-        </p>
-      ),
-    }),
-  ];
-  const [data, setData] = React.useState(() => [...defaultData]);
-  const table = useReactTable({
-    data,
-    columns,
-    state: {
-      sorting,
-    },
-    onSortingChange: setSorting,
-    getCoreRowModel: getCoreRowModel(),
-    getSortedRowModel: getSortedRowModel(),
-    debugTable: true,
-  });
+  useEffect(() => {
+    getLogsData();
+  }, []);
+
   return (
     <Card extra={"w-full pb-10 mt-5 p-4 h-full"}>
       <header className="relative flex flex-wrap items-center justify-between gap-4">
@@ -137,12 +81,11 @@ function ColumnsTable(props) {
         </div>
       </header>
 
-      <div className="mt-8 overflow-x-scroll xl:overflow-x-hidden">
-        <LogsTable logs={tableData} />
+      <div className="mt-8 overflow-scroll xl:overflow-hidden">
+        <LogsTable logs={logs} />
       </div>
     </Card>
   );
 }
 
 export default ColumnsTable;
-const columnHelper = createColumnHelper();

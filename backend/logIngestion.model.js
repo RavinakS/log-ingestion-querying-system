@@ -1,7 +1,7 @@
 const fs = require("fs/promises");
 const path = require("path");
 
-const filePath = path.join(__dirname, "data", "logData.json");
+const filePath = path.join(__dirname, "logData.json");
 
 const getLogs = async () => {
   try {

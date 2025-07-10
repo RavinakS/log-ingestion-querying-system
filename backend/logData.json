@@ -58,5 +58,65 @@
     "metadata": {
       "parentResourceId": "server-5678"
     }
+  },
+  {
+    "level": "info",
+    "message": "User login successful",
+    "resourceId": "server-1234",
+    "timestamp": "2025-07-09T11:45:00Z",
+    "traceId": "trace-abc123",
+    "spanId": "span-def456",
+    "commit": "a1b2c3d",
+    "metadata": {
+      "parentResourceId": "server-5678"
+    }
+  },
+  {
+    "level": "error",
+    "message": "Database connection failed",
+    "resourceId": "db-4321",
+    "timestamp": "2025-07-09T11:50:00Z",
+    "traceId": "trace-xyz789",
+    "spanId": "span-ghi012",
+    "commit": "e4f5g6h",
+    "metadata": {
+      "parentResourceId": "server-5678"
+    }
+  },
+  {
+    "level": "warn",
+    "message": "High memory usage detected",
+    "resourceId": "server-8765",
+    "timestamp": "2025-07-09T11:55:00Z",
+    "traceId": "trace-lmn456",
+    "spanId": "span-opq789",
+    "commit": "i7j8k9l",
+    "metadata": {
+      "parentResourceId": "server-5678"
+    }
+  },
+  {
+    "level": "info",
+    "message": "Scheduled job executed",
+    "resourceId": "worker-2222",
+    "timestamp": "2025-07-09T12:00:00Z",
+    "traceId": "trace-uvw123",
+    "spanId": "span-rst456",
+    "commit": "m1n2o3p",
+    "metadata": {
+      "parentResourceId": "server-5678"
+    }
+  },
+  {
+    "level": "error",
+    "message": "Timeout while calling external API",
+    "resourceId": "server-3333",
+    "timestamp": "2025-07-09T12:05:00Z",
+    "traceId": "trace-pqr789",
+    "spanId": "span-xyz012",
+    "commit": "q4r5s6t",
+    "metadata": {
+      "parentResourceId": "server-5678"
+    }
   }
 ]

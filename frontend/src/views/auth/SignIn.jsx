@@ -50,11 +50,10 @@ export default function SignIn() {
       const resp = await axios.post(`${baseUrl}/add-log`, body);
       if (resp.status === 201) {
         toast.success("Log ingested successfully.");
+        setFormData({});
       } else {
         toast.error(resp.data.message || "Something went wrong.");
       }
-      setFormData({});
-      return;
     } catch (err) {
       console.log(err);
       toast.error("Something went wrong!!");

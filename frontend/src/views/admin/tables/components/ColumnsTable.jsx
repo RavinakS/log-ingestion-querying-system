@@ -11,30 +11,29 @@ function ColumnsTable(props) {
   const [level, setLevel] = useState("");
   const [search, setSearch] = useState("");
 
-  const getLogsData = async () => {
+  const getLogsData = async (filters) => {
     try {
-      const logsData = await axios.get(`${baseUrl}/get-logs`);
+      const logsData = await axios.get(
+        `${baseUrl}/get-logs`,
+        filters ? { params: filters } : {}
+      );
       setLogs(logsData?.data?.logs || []);
     } catch (err) {
       console.log(err);
     }
   };
 
-  const handleDateChange = (e) => {
-    setDate(e.target.value);
-  };
-
-  const handleLevelChange = (e) => {
-    setLevel(e.target.value);
-  };
-
-  const handleSubmit = () => {
-    console.log("Selected date:", date);
-    console.log("Selected level:", level);
+  const handleSubmit = async () => {
+    try {
+      const filters = { level, date, search };
+      await getLogsData(filters);
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   useEffect(() => {
-    getLogsData();
+    getLogsData("");
   }, []);
 
   return (
@@ -44,13 +43,13 @@ function ColumnsTable(props) {
           <input
             type="date"
             value={date}
-            onChange={handleDateChange}
+            onChange={(e) => setDate(e.target.value)}
             className="rounded-md border border-gray-300 px-2 py-1 text-sm text-gray-700"
           />
 
           <select
             value={level}
-            onChange={handleLevelChange}
+            onChange={(e) => setLevel(e.target.value)}
             className="rounded-md border border-gray-300 px-2 py-1 text-sm text-gray-700"
           >
             <option value="">All Levels</option>

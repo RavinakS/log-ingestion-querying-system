@@ -32,7 +32,7 @@ const addLog = async (req, res) => {
 
 const getLogData = async (req, res) => {
   try {
-    const { search, level, startTime, endTime } = req.query;
+    const { search, level, startTime, endTime, date } = req.query;
 
     const logData = await getLogs();
     let filtered = logData;
@@ -45,8 +45,8 @@ const getLogData = async (req, res) => {
       filtered = filtered.filter((log) => log.message.includes(search));
     }
 
-    if (startTime) {
-      const start = new Date(startTime);
+    if (startTime || date) {
+      const start = new Date(startTime || date);
       filtered = filtered.filter((log) => new Date(log.timestamp) >= start);
     }
 

@@ -3,8 +3,16 @@ const { checkRequiredFields } = require("./utils");
 
 const addLog = async (req, res) => {
   try {
-    const { level, message, resourceId, timestamp, traceId, commit, metadata } =
-      req.body;
+    const {
+      level,
+      message,
+      resourceId,
+      timestamp,
+      traceId,
+      commit,
+      metadata,
+      spanId,
+    } = req.body;
 
     const requiredFieldsExist = checkRequiredFields(req.body);
 
@@ -20,6 +28,7 @@ const addLog = async (req, res) => {
       traceId,
       commit,
       metadata,
+      spanId,
     };
 
     await addNewLog(log);

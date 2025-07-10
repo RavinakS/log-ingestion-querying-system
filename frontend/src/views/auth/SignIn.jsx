@@ -1,20 +1,21 @@
 import React, { useState } from "react";
 import InputField from "components/fields/InputField";
 import DateTimeInput from "components/fields/DateTimeField";
+import MetadataInput from "components/fields/MetadataInput";
+import { toast } from "react-toastify";
+import axios from "axios";
+const baseUrl = "http://localhost:5000";
 
 export default function SignIn() {
   const [timestamp, setTimestamp] = useState("");
+  const [metadata, setMetadata] = useState("");
   const [formData, setFormData] = useState({
     level: "",
     message: "",
     resourceId: "",
-    timestamp: "",
     traceId: "",
     spanId: "",
     commit: "",
-    metadata: {
-      parentResourceId: "",
-    },
   });
 
   const handleChange = (e) => {
@@ -25,8 +26,39 @@ export default function SignIn() {
     }));
   };
 
-  const handleSubmit = () => {
-    console.log("Form submitted:", formData);
+  const handleSubmit = async () => {
+    try {
+      if (!timestamp) {
+        toast.error("Missing required fields."); //{"firstName": "Ravina", "lastName": "Kumari"}
+      }
+      const metadataObj = metadata.trim() ? JSON.parse(metadata) : {};
+      if (!metadataObj || Object.keys(metadataObj).length === 0) {
+        toast.error("Missing required fields.");
+        return;
+      }
+
+      const keys = Object.keys(formData);
+      for (let key of keys) {
+        if (!formData[key]) {
+          console.log("missing field:: ", key);
+          toast.error("Missing required fields.");
+          return;
+        }
+      }
+
+      const body = { ...formData, timestamp, metadata };
+      const resp = await axios.post(`${baseUrl}/add-log`, body);
+      if (resp.status === 201) {
+        toast.success("Log ingested successfully.");
+      } else {
+        toast.error(resp.data.message || "Something went wrong.");
+      }
+      setFormData({});
+      return;
+    } catch (err) {
+      console.log(err);
+      toast.error("Something went wrong!!");
+    }
   };
 
   return (
@@ -79,13 +111,7 @@ export default function SignIn() {
         onChange={handleChange}
       />
 
-      <InputField
-        label="Metadata*"
-        placeholder={`{"parentResourceId": "server-5678"}`}
-        id="metadata"
-        value={formData.metadata}
-        onChange={handleChange}
-      />
+      <MetadataInput value={metadata} onChange={setMetadata} />
 
       <DateTimeInput
         id="timestamp"

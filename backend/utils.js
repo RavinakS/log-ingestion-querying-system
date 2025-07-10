@@ -1,7 +1,15 @@
 const checkRequiredFields = (log) => {
   let requiredFieldsExists = true;
-  const { level, message, resourceId, timestamp, traceId, commit, metadata } =
-    log;
+  const {
+    level,
+    message,
+    resourceId,
+    timestamp,
+    traceId,
+    commit,
+    metadata,
+    spanId,
+  } = log;
 
   if (
     !level ||
@@ -10,7 +18,8 @@ const checkRequiredFields = (log) => {
     !timestamp ||
     !traceId ||
     !commit ||
-    metadata
+    !metadata ||
+    !spanId
   ) {
     requiredFieldsExists = false;
   }

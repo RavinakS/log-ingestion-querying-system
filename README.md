@@ -1,24 +1,90 @@
-There are two folders "backend" and "fronend"
-To run backend <> go to backend directory (cd backend) <> run server.js file (node server.js)
-To run fronend <> go to frontend directory (cd frontend) <> npm start
+# Log Ingestion querying Application
 
-**Backend**
-ther are two api in backend
-Router.post("/add-log", addLog);
-Router.get("/get-logs", getLogData);
+This project consists of two folders: `backend` and `frontend`.
 
-in adding a log I have done required fields validation and
-in get logs api three filters implemented 
-1. lever filter which is a dropdown
-2. search - searching in message field
-3. date - timestemp filter
+The **frontend** uses a GitHub theme for styling (only for looks), but all forms, listings, logic, and code are written by me.
 
-**Frontend**
-I have used github theme for frontend, just to look the website good, otherthen that the form and listing and all are done by me.
-to see add log page code got to --> frontend <> src <> views <> auth <> SignIn.jsx component
-``have used there signin component because that was looking like a form``
+---
 
-to see listing page got to --> frontend <> src <> admin <> tables <> index.jsx or components <> ColumnsTable.jsx
-to show logs data I wanted a table so used this component
+## 🚀 How to Run
 
-inside every used component each and every change or line of code is written by me.
+### ▶️ Backend
+
+To run the backend:
+
+1. Go to the backend directory:
+    ```bash
+    cd backend
+    ```
+2. Run the server:
+    ```bash
+    node server.js
+    ```
+
+### ▶️ Frontend
+
+To run the frontend:
+
+1. Go to the frontend directory:
+    ```bash
+    cd frontend
+    ```
+2. Start the React app:
+    ```bash
+    npm start
+    ```
+
+---
+
+## 🧩 Backend
+
+The backend provides **two APIs**:
+
+### POST `/add-log`
+- Adds a log.
+- Performs required fields validation.
+
+### GET `/get-logs`
+- Retrieves log data.
+- Supports three filters:
+  1. **Level Filter:** dropdown to filter logs by level.
+  2. **Search:** searches in the `message` field.
+  3. **Date Filter:** filters by timestamp.
+
+---
+
+## 🎨 Frontend
+
+The frontend is built using React.
+
+---
+
+### 🔷 Add Log Page
+
+- Location:  
+frontend/src/views/auth/SignIn.jsx
+
+- Notes:  
+I reused the `SignIn` component because it already looked like a form.  
+
+---
+
+### 🔷 Logs Listing Page
+
+- Location:  
+frontend/src/views/admin/tables/index.jsx
+or 
+
+frontend/src/views/admin/tables/components/ColumnsTable.jsx
+
+- Notes:  
+To display log data, I used a table component.  
+
+---
+
+## ✍️ Author Notes
+
+✅ Every single change in the used components was implemented and written by me.  
+✅ Only the theme/style was reused.
+
+---

@@ -1,90 +1,148 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
+import CardMenu from "components/card/CardMenu";
 import Card from "components/card";
-import { FiSearch } from "react-icons/fi";
-import LogsTable from "./LogsTable";
-import axios from "axios";
-const baseUrl = "http://localhost:5000";
+
+import {
+  createColumnHelper,
+  flexRender,
+  getCoreRowModel,
+  getSortedRowModel,
+  useReactTable,
+} from "@tanstack/react-table";
 
 function ColumnsTable(props) {
-  const [logs, setLogs] = useState([]);
-  const [date, setDate] = useState("");
-  const [level, setLevel] = useState("");
-  const [search, setSearch] = useState("");
-
-  const getLogsData = async (filters) => {
-    try {
-      const logsData = await axios.get(
-        `${baseUrl}/get-logs`,
-        filters ? { params: filters } : {}
-      );
-      setLogs(logsData?.data?.logs || []);
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
-  const handleSubmit = async () => {
-    try {
-      const filters = { level, date, search };
-      await getLogsData(filters);
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
-  useEffect(() => {
-    getLogsData("");
-  }, []);
-
+  const { tableData } = props;
+  const [sorting, setSorting] = React.useState([]);
+  let defaultData = tableData;
+  const columns = [
+    columnHelper.accessor("name", {
+      id: "name",
+      header: () => (
+        <p className="text-sm font-bold text-gray-600 dark:text-white">NAME</p>
+      ),
+      cell: (info) => (
+        <p className="text-sm font-bold text-navy-700 dark:text-white">
+          {info.getValue()}
+        </p>
+      ),
+    }),
+    columnHelper.accessor("progress", {
+      id: "progress",
+      header: () => (
+        <p className="text-sm font-bold text-gray-600 dark:text-white">
+          PROGRESS
+        </p>
+      ),
+      cell: (info) => (
+        <p className="text-sm font-bold text-navy-700 dark:text-white">
+          {info.getValue()}
+        </p>
+      ),
+    }),
+    columnHelper.accessor("quantity", {
+      id: "quantity",
+      header: () => (
+        <p className="text-sm font-bold text-gray-600 dark:text-white">
+          QUANTITY
+        </p>
+      ),
+      cell: (info) => (
+        <p className="text-sm font-bold text-navy-700 dark:text-white">
+          {info.getValue()}
+        </p>
+      ),
+    }),
+    columnHelper.accessor("date", {
+      id: "date",
+      header: () => (
+        <p className="text-sm font-bold text-gray-600 dark:text-white">DATE</p>
+      ),
+      cell: (info) => (
+        <p className="text-sm font-bold text-navy-700 dark:text-white">
+          {info.getValue()}
+        </p>
+      ),
+    }),
+  ]; // eslint-disable-next-line
+  const [data, setData] = React.useState(() => [...defaultData]);
+  const table = useReactTable({
+    data,
+    columns,
+    state: {
+      sorting,
+    },
+    onSortingChange: setSorting,
+    getCoreRowModel: getCoreRowModel(),
+    getSortedRowModel: getSortedRowModel(),
+    debugTable: true,
+  });
   return (
-    <Card extra={"w-full pb-10 mt-5 p-4 h-full"}>
-      <header className="relative flex flex-wrap items-center justify-between gap-4">
-        <div className="flex flex-wrap gap-3">
-          <input
-            type="date"
-            value={date}
-            onChange={(e) => setDate(e.target.value)}
-            className="rounded-md border border-gray-300 px-2 py-1 text-sm text-gray-700"
-          />
-
-          <select
-            value={level}
-            onChange={(e) => setLevel(e.target.value)}
-            className="rounded-md border border-gray-300 px-2 py-1 text-sm text-gray-700"
-          >
-            <option value="">All Levels</option>
-            <option value="info">Info</option>
-            <option value="warn">Warn</option>
-            <option value="error">Error</option>
-          </select>
-
-          <div className="relative">
-            <input
-              type="text"
-              placeholder="Search message"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className="w-48 rounded-md border border-gray-300 px-8 py-1 text-sm text-gray-700"
-            />
-            <FiSearch className="absolute left-2 top-1/2 -translate-y-1/2 text-gray-400" />
-          </div>
+    <Card extra={"w-full pb-10 p-4 h-full"}>
+      <header className="relative flex items-center justify-between">
+        <div className="text-xl font-bold text-navy-700 dark:text-white">
+          4-Columns Table
         </div>
-
-        <div className="flex flex-wrap gap-3">
-          <button
-            onClick={handleSubmit}
-            className="rounded bg-brand-500 px-4 py-2 text-sm font-medium text-white hover:bg-brand-600"
-          >
-            Apply Filters
-          </button>
-        </div>
+        <CardMenu />
       </header>
 
-      <div className="mt-8 overflow-scroll xl:overflow-hidden">
-        <LogsTable logs={logs} />
+      <div className="mt-8 overflow-x-scroll xl:overflow-x-hidden">
+        <table className="w-full">
+          <thead>
+            {table.getHeaderGroups().map((headerGroup) => (
+              <tr key={headerGroup.id} className="!border-px !border-gray-400">
+                {headerGroup.headers.map((header) => {
+                  return (
+                    <th
+                      key={header.id}
+                      colSpan={header.colSpan}
+                      onClick={header.column.getToggleSortingHandler()}
+                      className="cursor-pointer border-b-[1px] border-gray-200 pt-4 pb-2 pr-4 text-start"
+                    >
+                      <div className="items-center justify-between text-xs text-gray-200">
+                        {flexRender(
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
+                        {{
+                          asc: "",
+                          desc: "",
+                        }[header.column.getIsSorted()] ?? null}
+                      </div>
+                    </th>
+                  );
+                })}
+              </tr>
+            ))}
+          </thead>
+          <tbody>
+            {table
+              .getRowModel()
+              .rows.slice(0, 5)
+              .map((row) => {
+                return (
+                  <tr key={row.id}>
+                    {row.getVisibleCells().map((cell) => {
+                      return (
+                        <td
+                          key={cell.id}
+                          className="min-w-[150px] border-white/0 py-3  pr-4"
+                        >
+                          {flexRender(
+                            cell.column.columnDef.cell,
+                            cell.getContext()
+                          )}
+                        </td>
+                      );
+                    })}
+                  </tr>
+                );
+              })}
+          </tbody>
+        </table>
       </div>
     </Card>
   );
 }
 
 export default ColumnsTable;
+const columnHelper = createColumnHelper();
